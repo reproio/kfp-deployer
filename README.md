@@ -4,7 +4,9 @@ Deploy your ml-pipeline with `kfp-deploy` from cli.
 
 ## How to use
 
-see `kfp-deploy -h`.
+`kfp-deploy https://your-kubeflow-host/ "pipeline-name" ./pipeline_file.yaml`
+
+for more detail, see `kfp-deploy -h`.
 
 ## what the difference from `kfp pipeline upload`?
 
