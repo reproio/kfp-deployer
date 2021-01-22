@@ -3,10 +3,10 @@
 
 import argparse
 from datetime import datetime
-from typing import Iterable, Optional, NamedTuple
-from pytz import timezone
-import kfp
+from typing import Iterable, NamedTuple, Optional
 
+import kfp
+from pytz import timezone
 
 KNOWN_TIMEZONE_TABLE = {"JST": "Asia/Tokyo"}
 
