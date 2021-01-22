@@ -3,13 +3,19 @@
 
 import argparse
 from datetime import datetime
-from typing import Optional
+from typing import Iterable, Optional, NamedTuple
 from pytz import timezone
 import kfp
 
-LIST_PAGE_SIZE = 1000
 
 KNOWN_TIMEZONE_TABLE = {"JST": "Asia/Tokyo"}
+
+
+class Pipeline(NamedTuple):
+    """Describes a pipeline deployed on the KFP instance."""
+
+    id: str
+    name: str
 
 
 def main() -> None:
@@ -68,15 +74,27 @@ def get_pipeline_id(client: kfp.Client, pipeline_name: str) -> Optional[str]:
     Returns:
         Optional[str]: If found, return Pipeline ID. If not, return None.
     """
-    pipelines_list = client.list_pipelines(page_size=LIST_PAGE_SIZE)
-    if pipelines_list.pipelines:
-        # check pipelines_list.pipelines is not null
-        for p in pipelines_list.pipelines:
-            if p.name == pipeline_name:
-                # found
-                return p.id
+    for p in _iterate_pipelines(client):
+        if p.name == pipeline_name:
+            return p.id
     # not found
     return None
+
+
+def _iterate_pipelines(client: kfp.Client) -> Iterable[Pipeline]:
+    token: Optional[str] = None
+    while True:
+        pipelines_list = client.list_pipelines(page_token=token)
+        # handle the response
+        for p in pipelines_list.pipelines:
+            p_obj = Pipeline(p.id, p.name)
+            yield p_obj
+        # go on to the next page
+        token = pipelines_list.next_page_token
+        if token is None:
+            # when the reading page reached to the end,
+            # next_page_token will be None.
+            return
 
 
 def deploy_new_pipeline(
