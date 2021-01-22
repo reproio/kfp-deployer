@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kfp-deployer"
-version = "0.1.0"
+version = "0.1.1"
 description = "Deploy the KFP ML Pipeline from CLI."
 authors = ["Karno <karnoroid@gmail.com>"]
 readme = "README.md"
